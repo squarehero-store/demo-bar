@@ -1,13 +1,15 @@
-// Check if the current window is within an iframe (preview mode)
-if (window.frameElement === null) {
-    console.log('Squarespace is not in preview mode.');
+// ================================================
+//         ⚡ Demo Bar by SquareHero.store
+// ================================================
+(function() {
+    console.log('SquareHero Demo Bar script loaded');
 
     const presetSchemes = [
-        { name: "Earth tones", colors: ["#FFFAF0", "#D2B48C", "#8B4513", "#556B2F", "#1C2321"] },
-        { name: "Pastel with purple", colors: ["#FFF5EE", "#DB7093", "#98FB98", "#8A2BE2", "#FFFFFF"] },
-        { name: "Neutral browns", colors: ["#FFFFFF", "#F5DEB3", "#CD853F", "#4A3728", "#1C1C1C"] },
-        { name: "Cool blues and yellow", colors: ["#F0F8FF", "#87CEEB", "#4682B4", "#FFD700", "#000080"] },
-        { name: "Warm earth tones", colors: ["#FFF5EE", "#CD5C5C", "#8B4513", "#4A3728", "#2F2F2F"] }
+        { name: "Earth tones", colors: ["#ffffff", "#fcf6eb", "#de9831", "#606e31", "#363c2e"] },
+        { name: "Pastel with purple", colors: ["#ffffff", "#f7c9b8", "#f45162", "#77d69f", "#4e0660"] },
+        { name: "Neutral browns", colors: ["#FFFFFF", "#f5e3ce", "#b69149", "#604c49", "#302a28"] },
+        { name: "Cool blues and yellow", colors: ["#ffffff", "#e3ecf9", "#0d7d8c", "#d9b407", "#131c47"] },
+        { name: "Warm earth tones", colors: ["#ffffff", "#eed5b9", "#c15b53", "#754834", "#503731"] }
     ];
 
     const controlBarHtml = `
@@ -36,9 +38,19 @@ if (window.frameElement === null) {
       </div>
     `;
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Inject control bar
+    function initializeDemoBar() {
+        if (window.frameElement !== null) {
+            console.log('Squarespace is in preview mode. Demo bar not initialized.');
+            return;
+        }
+
         const footer = document.querySelector('footer');
+        if (!footer) {
+            console.log('Footer not found. Retrying in 100ms.');
+            setTimeout(initializeDemoBar, 100);
+            return;
+        }
+
         const controlBar = document.createElement('div');
         controlBar.innerHTML = controlBarHtml;
         footer.insertAdjacentElement('afterend', controlBar);
@@ -56,174 +68,158 @@ if (window.frameElement === null) {
             presetContainer.appendChild(row);
         });
 
-        // Add event listener for the Preset Schemes button
+        // Add event listeners and initialize other features
+        setupEventListeners();
+        restoreColors();
+        initializeColoris();
+    }
+
+    function setupEventListeners() {
         const presetSchemesBtn = document.getElementById('presetSchemesBtn');
         const presetSchemesPanel = document.getElementById('presetSchemes');
 
         presetSchemesBtn.addEventListener('click', function (e) {
-            e.stopPropagation(); // Prevent event from bubbling up
+            e.stopPropagation();
             presetSchemesPanel.classList.toggle('hidden');
 
             if (!presetSchemesPanel.classList.contains('hidden')) {
                 const btnRect = presetSchemesBtn.getBoundingClientRect();
                 const schemesRect = presetSchemesPanel.getBoundingClientRect();
-
-                // Calculate the left position to center the schemes panel
                 const leftPosition = btnRect.left + (btnRect.width / 2) - (schemesRect.width / 2);
-
-                // Ensure the panel doesn't go off-screen
                 const maxLeft = window.innerWidth - schemesRect.width;
                 const adjustedLeft = Math.max(0, Math.min(leftPosition, maxLeft));
-
                 presetSchemesPanel.style.left = `${adjustedLeft}px`;
             }
         });
 
-        // Close the panel when clicking outside
         document.addEventListener('click', function (e) {
             if (!presetSchemesPanel.contains(e.target) && e.target !== presetSchemesBtn) {
                 presetSchemesPanel.classList.add('hidden');
             }
         });
 
-        // Restore colors from local storage if available
+        document.getElementById('resetBtn').addEventListener('click', resetColors);
+    }
+
+    function restoreColors() {
         const savedColors = JSON.parse(localStorage.getItem('savedColors'));
         if (savedColors) {
             const root = document.documentElement;
-            root.style.setProperty('--white-hsl', savedColors['--white-hsl']);
-            root.style.setProperty('--lightAccent-hsl', savedColors['--lightAccent-hsl']);
-            root.style.setProperty('--accent-hsl', savedColors['--accent-hsl']);
-            root.style.setProperty('--darkAccent-hsl', savedColors['--darkAccent-hsl']);
-            root.style.setProperty('--black-hsl', savedColors['--black-hsl']);
+            Object.entries(savedColors).forEach(([key, value]) => {
+                root.style.setProperty(key, value);
+            });
+        }
+    }
+
+    function initializeColoris() {
+        if (typeof Coloris === 'undefined') {
+            console.log('Coloris not found. Retrying in 100ms.');
+            setTimeout(initializeColoris, 100);
+            return;
         }
 
-        // Initialize Coloris for colour swatches
         Coloris({
             el: '.colour-swatch',
             themeMode: 'dark',
             format: 'hsl',
             wrap: false,
             onChange: (color, input) => {
-                console.log('Color picked:', color);
                 const root = document.documentElement;
-                // Parse the HSL color string
                 const match = color.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
                 if (match) {
                     const [, h, s, l] = match;
                     const formattedColor = `${h}, ${s}%, ${l}%`;
-                    switch (input.id) {
-                        case 'whitePicker':
-                            root.style.setProperty('--white-hsl', formattedColor);
-                            break;
-                        case 'lightAccentPicker':
-                            root.style.setProperty('--lightAccent-hsl', formattedColor);
-                            break;
-                        case 'accentPicker':
-                            root.style.setProperty('--accent-hsl', formattedColor);
-                            break;
-                        case 'darkAccentPicker':
-                            root.style.setProperty('--darkAccent-hsl', formattedColor);
-                            break;
-                        case 'blackPicker':
-                            root.style.setProperty('--black-hsl', formattedColor);
-                            break;
-                        default:
-                            break;
-                    }
-                    // Save colors to local storage
+                    const property = `--${input.id.replace('Picker', '')}-hsl`;
+                    root.style.setProperty(property, formattedColor);
                     saveColorsToLocalStorage();
                     updateSwatchColors();
                 }
             }
         });
+    }
 
-        document.getElementById('resetBtn').addEventListener('click', function () {
-            // Reset colors
-            const root = document.documentElement;
-            root.style.removeProperty('--white-hsl');
-            root.style.removeProperty('--lightAccent-hsl');
-            root.style.removeProperty('--accent-hsl');
-            root.style.removeProperty('--darkAccent-hsl');
-            root.style.removeProperty('--black-hsl');
-
-            // Clear local storage
-            localStorage.removeItem('savedColors');
-
-            // Reset swatches
-            updateSwatchColors();
+    function applyPresetScheme(index) {
+        const scheme = presetSchemes[index];
+        const root = document.documentElement;
+        ['white', 'lightAccent', 'accent', 'darkAccent', 'black'].forEach((name, i) => {
+            const hsl = hexToHSL(scheme.colors[i]);
+            root.style.setProperty(`--${name}-hsl`, hsl);
         });
+        updateSwatchColors();
+        saveColorsToLocalStorage();
+    }
 
-        function applyPresetScheme(index) {
-            const scheme = presetSchemes[index];
-            const root = document.documentElement;
-            ['white', 'lightAccent', 'accent', 'darkAccent', 'black'].forEach((name, i) => {
-                const hsl = hexToHSL(scheme.colors[i]);
-                root.style.setProperty(`--${name}-hsl`, hsl);
-            });
-            updateSwatchColors();
-            saveColorsToLocalStorage();
+    function hexToHSL(hex) {
+        let r = 0, g = 0, b = 0;
+        if (hex.length == 4) {
+            r = "0x" + hex[1] + hex[1];
+            g = "0x" + hex[2] + hex[2];
+            b = "0x" + hex[3] + hex[3];
+        } else if (hex.length == 7) {
+            r = "0x" + hex[1] + hex[2];
+            g = "0x" + hex[3] + hex[4];
+            b = "0x" + hex[5] + hex[6];
         }
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        let cmin = Math.min(r, g, b),
+            cmax = Math.max(r, g, b),
+            delta = cmax - cmin,
+            h = 0,
+            s = 0,
+            l = 0;
 
-        function hexToHSL(hex) {
-            // Convert hex to RGB first
-            let r = 0, g = 0, b = 0;
-            if (hex.length == 4) {
-                r = "0x" + hex[1] + hex[1];
-                g = "0x" + hex[2] + hex[2];
-                b = "0x" + hex[3] + hex[3];
-            } else if (hex.length == 7) {
-                r = "0x" + hex[1] + hex[2];
-                g = "0x" + hex[3] + hex[4];
-                b = "0x" + hex[5] + hex[6];
-            }
-            // Then to HSL
-            r /= 255;
-            g /= 255;
-            b /= 255;
-            let cmin = Math.min(r, g, b),
-                cmax = Math.max(r, g, b),
-                delta = cmax - cmin,
-                h = 0,
-                s = 0,
-                l = 0;
+        if (delta == 0)
+            h = 0;
+        else if (cmax == r)
+            h = ((g - b) / delta) % 6;
+        else if (cmax == g)
+            h = (b - r) / delta + 2;
+        else
+            h = (r - g) / delta + 4;
 
-            if (delta == 0)
-                h = 0;
-            else if (cmax == r)
-                h = ((g - b) / delta) % 6;
-            else if (cmax == g)
-                h = (b - r) / delta + 2;
-            else
-                h = (r - g) / delta + 4;
+        h = Math.round(h * 60);
 
-            h = Math.round(h * 60);
+        if (h < 0)
+            h += 360;
 
-            if (h < 0)
-                h += 360;
+        l = (cmax + cmin) / 2;
+        s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+        s = +(s * 100).toFixed(1);
+        l = +(l * 100).toFixed(1);
 
-            l = (cmax + cmin) / 2;
-            s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-            s = +(s * 100).toFixed(1);
-            l = +(l * 100).toFixed(1);
+        return h + ", " + s + "%, " + l + "%";
+    }
 
-            return h + ", " + s + "%, " + l + "%";
-        }
+    function updateSwatchColors() {
+        const swatches = document.querySelectorAll('.colour-swatch');
+        swatches.forEach(swatch => {
+            swatch.style.backgroundColor = `hsl(var(--${swatch.id.replace('Picker', '')}-hsl))`;
+        });
+    }
 
-        function updateSwatchColors() {
-            const swatches = document.querySelectorAll('.colour-swatch');
-            swatches.forEach(swatch => {
-                swatch.style.backgroundColor = `hsl(var(--${swatch.id.replace('Picker', '')}-hsl))`;
-            });
-        }
+    function saveColorsToLocalStorage() {
+        const colors = {};
+        ['white', 'lightAccent', 'accent', 'darkAccent', 'black'].forEach(name => {
+            colors[`--${name}-hsl`] = getComputedStyle(document.documentElement).getPropertyValue(`--${name}-hsl`);
+        });
+        localStorage.setItem('savedColors', JSON.stringify(colors));
+    }
 
-        function saveColorsToLocalStorage() {
-            const colors = {};
-            ['white', 'lightAccent', 'accent', 'darkAccent', 'black'].forEach(name => {
-                colors[`--${name}-hsl`] = getComputedStyle(document.documentElement).getPropertyValue(`--${name}-hsl`);
-            });
-            localStorage.setItem('savedColors', JSON.stringify(colors));
-        }
-    });
-} else {
-    console.log('Squarespace is in preview mode. Script not executed.');
-}
+    function resetColors() {
+        const root = document.documentElement;
+        ['white', 'lightAccent', 'accent', 'darkAccent', 'black'].forEach(name => {
+            root.style.removeProperty(`--${name}-hsl`);
+        });
+        localStorage.removeItem('savedColors');
+        updateSwatchColors();
+    }
+
+    // Initialize the demo bar when the DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeDemoBar);
+    } else {
+        initializeDemoBar();
+    }
+})();
