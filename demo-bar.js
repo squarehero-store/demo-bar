@@ -1,8 +1,35 @@
 // ================================================
 //         ⚡ Demo Bar by SquareHero.store
 // ================================================
-(function() {
+(function () {
     console.log('SquareHero Demo Bar script loaded');
+
+    // Load Coloris
+    function loadColoris() {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/gh/squarehero-store/demo-bar@0/coloris.min.js';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+
+    // Load fonts
+    function loadFonts() {
+        const fontLinks = [
+            { rel: "preconnect", href: "https://fonts.googleapis.com" },
+            { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true },
+            { href: "https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap", rel: "stylesheet" },
+            { href: "https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap", rel: "stylesheet" }
+        ];
+
+        fontLinks.forEach(linkData => {
+            const link = document.createElement('link');
+            Object.assign(link, linkData);
+            document.head.appendChild(link);
+        });
+    }
 
     const presetSchemes = [
         { name: "Earth tones", colors: ["#ffffff", "#fcf6eb", "#de9831", "#606e31", "#363c2e"] },
@@ -38,9 +65,18 @@
       </div>
     `;
 
-    function initializeDemoBar() {
+    async function initializeDemoBar() {
         if (window.frameElement !== null) {
             console.log('Squarespace is in preview mode. Demo bar not initialized.');
+            return;
+        }
+
+        // Load Coloris and fonts
+        try {
+            await loadColoris();
+            loadFonts();
+        } catch (error) {
+            console.error('Failed to load Coloris or fonts:', error);
             return;
         }
 
