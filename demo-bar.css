@@ -1,0 +1,194 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#content-wrapper {
+  width: 100%;
+  max-width: 100%;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
+}
+.control-bar {
+  position: fixed;
+  bottom: 0;
+  padding: 15px 3vw;
+  background: #1F1F1F!important;
+  width: 100%;
+  color: white;
+  font-size: .8rem;
+  box-sizing: border-box;
+  font-family: "Roboto Condensed", sans-serif;
+  border-top: solid 1px #3c3c3c;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+}
+.control-bar .logo-wrapper {
+  font-size: 1.3rem;
+  flex: 0 0 20%;
+}
+.control-bar .logo-wrapper h5 {
+  margin: 0;
+}
+.control-bar .view-toggle-wrapper {
+  flex: 0 0 10%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.control-bar .view-toggle-wrapper .view-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.3s ease;
+}
+.control-bar .view-toggle-wrapper .view-toggle-btn.active {
+  color: #ffffff;
+}
+.control-bar .view-toggle-wrapper .view-toggle-btn:hover {
+  color: #ffffff;
+}
+.control-bar .view-toggle-wrapper .view-toggle-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.control-bar #colour-wrapper {
+  flex: 1 0 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+.control-bar #colour-wrapper .swatches {
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+}
+.control-bar #colour-wrapper .swatches button {
+  display: none;
+}
+.control-bar #colour-wrapper .colour-swatch {
+  margin: 0 !important;
+  color: transparent;
+  width: 30px;
+  height: 30px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+.control-bar .cta-wrapper {
+  flex: 0 0 30%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.control-bar .cta-wrapper .cta-button {
+  padding: 13px 26px;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+  font-family: "Roboto Condensed";
+  font-size: 1rem;
+  color: white;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 1.12px;
+  text-transform: uppercase;
+  text-decoration: none !important;
+}
+.control-bar .cta-wrapper .cta-button:before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(90deg, #00D1FF 20.4%, #FF00E6 55.91%, #FF003D 80.09%);
+  background-position: 100% 0;
+  transition: background-position 0.5s ease;
+  /* Smooth transition */
+  z-index: -1;
+  border-radius: 0px;
+}
+.control-bar .cta-wrapper .cta-button:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #011e45;
+  /* Match this with the button's background color */
+  border-radius: 0px;
+  z-index: -1;
+}
+.control-bar .cta-wrapper .cta-button:hover {
+  opacity: 1 !important;
+  animation: buttonPulse 0.5s ease-in-out 0s 1 normal none;
+}
+@keyframes buttonPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.custom-btn {
+  display: inline-block;
+  padding: 5px 10px;
+  border-bottom: solid 1px white;
+  color: #fff;
+  cursor: pointer;
+}
+#presetSchemesBtn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-right: 10px;
+}
+#presetSchemes {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(31, 32, 32, 0.95);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+}
+#presetSchemes.hidden {
+  display: none;
+}
+.preset-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.preset-swatch {
+  width: 30px;
+  height: 30px;
+}
+.preset-row span {
+  display: none;
+}
+.preset-row {
+  flex-wrap: wrap;
+  padding: 10px;
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+}
