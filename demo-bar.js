@@ -16,7 +16,7 @@
         { name: "Earth tones", colors: ["#FFFAF0", "#D2B48C", "#8B4513", "#556B2F", "#1C2321"] },
         { name: "Pastel with purple", colors: ["#FFF5EE", "#DB7093", "#98FB98", "#8A2BE2", "#FFFFFF"] },
         { name: "Neutral browns", colors: ["#FFFFFF", "#F5DEB3", "#CD853F", "#4A3728", "#1C1C1C"] },
-        { name: "Cool blues and yellow", colors: ["#F0F8FF", "#87CEEB", "#4682B4", "#FFD700", "#000080"] },
+        { name: "Cool blues & yellow", colors: ["#F0F8FF", "#87CEEB", "#4682B4", "#FFD700", "#000080"] },
         { name: "Warm earth tones", colors: ["#FFF5EE", "#CD5C5C", "#8B4513", "#4A3728", "#2F2F2F"] }
     ];
 
