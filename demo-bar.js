@@ -113,6 +113,43 @@
         initializeColoris();
     }
 
+    function setupEventListeners() {
+        const presetSchemesBtn = document.getElementById('presetSchemesBtn');
+        const presetSchemesPanel = document.getElementById('presetSchemes');
+
+        presetSchemesBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            presetSchemesPanel.classList.toggle('hidden');
+
+            if (!presetSchemesPanel.classList.contains('hidden')) {
+                const btnRect = presetSchemesBtn.getBoundingClientRect();
+                const schemesRect = presetSchemesPanel.getBoundingClientRect();
+                const leftPosition = btnRect.left + (btnRect.width / 2) - (schemesRect.width / 2);
+                const maxLeft = window.innerWidth - schemesRect.width;
+                const adjustedLeft = Math.max(0, Math.min(leftPosition, maxLeft));
+                presetSchemesPanel.style.left = `${adjustedLeft}px`;
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!presetSchemesPanel.contains(e.target) && e.target !== presetSchemesBtn) {
+                presetSchemesPanel.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', resetColors);
+    }
+
+    function restoreColors() {
+        const savedColors = JSON.parse(localStorage.getItem('savedColors'));
+        if (savedColors) {
+            const root = document.documentElement;
+            Object.entries(savedColors).forEach(([key, value]) => {
+                root.style.setProperty(key, value);
+            });
+        }
+    }
+
     function initializeColoris() {
         if (typeof Coloris === 'undefined') {
             console.error('Coloris not found. Please ensure it has been loaded correctly.');
