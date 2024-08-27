@@ -2,51 +2,51 @@
 //         ⚡ Demo Bar by SquareHero.store
 // ================================================
 (function() {
-    console.log('SquareHero Demo Bar script loaded');
+    function initDemoBar() {
+        console.log('SquareHero Demo Bar script loaded');
 
-    // Check if the current window is within an iframe (preview mode)
-    if (window.frameElement !== null) {
-        console.log('Squarespace is in preview mode. Script not executed.');
-        return;
-    }
+        // Check if the current window is within an iframe (preview mode)
+        if (window.frameElement !== null) {
+            console.log('Squarespace is in preview mode. Script not executed.');
+            return;
+        }
 
-    console.log('Squarespace is not in preview mode.');
+        console.log('Squarespace is not in preview mode.');
 
-    const presetSchemes = [
-        { name: "Earth tones", colors: ["#FFFAF0", "#D2B48C", "#8B4513", "#556B2F", "#1C2321"] },
-        { name: "Pastel with purple", colors: ["#FFF5EE", "#DB7093", "#98FB98", "#8A2BE2", "#FFFFFF"] },
-        { name: "Neutral browns", colors: ["#FFFFFF", "#F5DEB3", "#CD853F", "#4A3728", "#1C1C1C"] },
-        { name: "Cool blues & yellow", colors: ["#F0F8FF", "#87CEEB", "#4682B4", "#FFD700", "#000080"] },
-        { name: "Warm earth tones", colors: ["#FFF5EE", "#CD5C5C", "#8B4513", "#4A3728", "#2F2F2F"] }
-    ];
+        const presetSchemes = [
+            { name: "Earth tones", colors: ["#FFFAF0", "#D2B48C", "#8B4513", "#556B2F", "#1C2321"] },
+            { name: "Pastel with purple", colors: ["#FFF5EE", "#DB7093", "#98FB98", "#8A2BE2", "#FFFFFF"] },
+            { name: "Neutral browns", colors: ["#FFFFFF", "#F5DEB3", "#CD853F", "#4A3728", "#1C1C1C"] },
+            { name: "Cool blues & yellow", colors: ["#F0F8FF", "#87CEEB", "#4682B4", "#FFD700", "#000080"] },
+            { name: "Warm earth tones", colors: ["#FFF5EE", "#CD5C5C", "#8B4513", "#4A3728", "#2F2F2F"] }
+        ];
 
-    const controlBarHtml = `
-      <div class="control-bar">
-          <div class="logo-wrapper">
-              <img src="https://cdn.jsdelivr.net/gh/squarehero-store/demo-bar@0/assets/sh-logo.svg" alt="SquareHero Logo">
-          </div>
-          <div id="colour-wrapper">
-              <button id="presetSchemesBtn">Preset Schemes ▼</button>
-              <div id="presetSchemes" class="hidden">
-                  <!-- Preset schemes will be populated by JavaScript -->
+        const controlBarHtml = `
+          <div class="control-bar">
+              <div class="logo-wrapper">
+                  <img src="https://cdn.jsdelivr.net/gh/squarehero-store/demo-bar@0/assets/sh-logo.svg" alt="SquareHero Logo">
               </div>
-              <span class="color-label" title="Edit color scheme">Edit color scheme</span>
-              <div class="swatches">
-                  <input type="text" id="whitePicker" class="colour-swatch slot-1" data-coloris style="background-color: hsl(var(--white-hsl));">
-                  <input type="text" id="lightAccentPicker" class="colour-swatch slot-2" data-coloris style="background-color: hsl(var(--lightAccent-hsl));">
-                  <input type="text" id="accentPicker" class="colour-swatch slot-3" data-coloris style="background-color: hsl(var(--accent-hsl));">
-                  <input type="text" id="darkAccentPicker" class="colour-swatch slot-4" data-coloris style="background-color: hsl(var(--darkAccent-hsl));">
-                  <input type="text" id="blackPicker" class="colour-swatch slot-5" data-coloris style="background-color: hsl(var(--black-hsl));">
+              <div id="colour-wrapper">
+                  <button id="presetSchemesBtn">Preset Schemes ▼</button>
+                  <div id="presetSchemes" class="hidden">
+                      <!-- Preset schemes will be populated by JavaScript -->
+                  </div>
+                  <span class="color-label" title="Edit color scheme">Edit color scheme</span>
+                  <div class="swatches">
+                      <input type="text" id="whitePicker" class="colour-swatch slot-1" data-coloris style="background-color: hsl(var(--white-hsl));">
+                      <input type="text" id="lightAccentPicker" class="colour-swatch slot-2" data-coloris style="background-color: hsl(var(--lightAccent-hsl));">
+                      <input type="text" id="accentPicker" class="colour-swatch slot-3" data-coloris style="background-color: hsl(var(--accent-hsl));">
+                      <input type="text" id="darkAccentPicker" class="colour-swatch slot-4" data-coloris style="background-color: hsl(var(--darkAccent-hsl));">
+                      <input type="text" id="blackPicker" class="colour-swatch slot-5" data-coloris style="background-color: hsl(var(--black-hsl));">
+                  </div>
+                  <div id="resetBtn" class="custom-btn" title="Reset changes"><span>Reset</span></div>
               </div>
-              <div id="resetBtn" class="custom-btn" title="Reset changes"><span>Reset</span></div>
+              <div class="cta-wrapper">
+                  <a class="cta-button primary-button" href="">Buy Template</a>
+              </div>
           </div>
-          <div class="cta-wrapper">
-              <a class="cta-button primary-button" href="">Buy Template</a>
-          </div>
-      </div>
-    `;
+        `;
 
-    document.addEventListener('DOMContentLoaded', function () {
         // Inject control bar
         const footer = document.querySelector('footer');
         const controlBar = document.createElement('div');
@@ -125,7 +125,7 @@
             // Reset swatches
             updateSwatchColors();
         });
-    });
+    }
 
     function initializeColoris() {
         Coloris({
@@ -220,5 +220,12 @@
             colors[`--${name}-hsl`] = getComputedStyle(document.documentElement).getPropertyValue(`--${name}-hsl`);
         });
         localStorage.setItem('savedColors', JSON.stringify(colors));
+    }
+
+    // Check if the DOM is already loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDemoBar);
+    } else {
+        initDemoBar();
     }
 })();
