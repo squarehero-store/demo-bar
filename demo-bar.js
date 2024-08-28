@@ -1,7 +1,7 @@
 // ================================================
 //         ⚡ Demo Bar by SquareHero.store
 // ================================================
-(function() {
+(function () {
     function initDemoBar() {
         console.log('SquareHero Demo Bar script loaded');
 
@@ -17,7 +17,7 @@
         function getColorSchemesFromMeta() {
             const schemes = [];
             const metaTags = document.getElementsByTagName('meta');
-            
+
             for (let i = 0; i < metaTags.length; i++) {
                 const attr = metaTags[i].getAttribute('squarehero-color-scheme');
                 if (attr && attr.startsWith('color-scheme-')) {
@@ -28,7 +28,7 @@
                     }
                 }
             }
-            
+
             return schemes.length > 0 ? schemes : null;
         }
 
@@ -105,7 +105,7 @@
             }
 
             // Add event listener for the Preset Schemes button
-   const presetSchemesBtn = document.getElementById('presetSchemesBtn');
+            const presetSchemesBtn = document.getElementById('presetSchemesBtn');
             const presetSchemesPanel = document.getElementById('presetSchemes');
             const controlBar = document.querySelector('.control-bar');
             if (presetSchemesBtn && presetSchemesPanel && controlBar) {
@@ -117,14 +117,14 @@
                         const btnRect = presetSchemesBtn.getBoundingClientRect();
                         const schemesRect = presetSchemesPanel.getBoundingClientRect();
                         const controlBarRect = controlBar.getBoundingClientRect();
-                        
+
                         // Calculate the left position to center the panel over the button
                         const leftPosition = btnRect.left + (btnRect.width / 2) - (schemesRect.width / 2);
-                        
+
                         // Ensure the panel doesn't go off-screen horizontally
                         const maxLeft = window.innerWidth - schemesRect.width;
                         const adjustedLeft = Math.max(0, Math.min(leftPosition, maxLeft));
-                        
+
                         // Set the position
                         presetSchemesPanel.style.left = `${adjustedLeft}px`;
                         presetSchemesPanel.style.bottom = `${controlBarRect.height}px`; // Flush with the top of control bar
@@ -174,7 +174,7 @@
             }
         }
 
-       function initializeColoris() {
+        function initializeColoris() {
             Coloris({
                 el: '.colour-swatch',
                 themeMode: 'dark',
@@ -240,16 +240,16 @@
             root.style.setProperty('--safeLightAccent-hsl', colors['--accent-hsl']);
             root.style.setProperty('--safeDarkAccent-hsl', colors['--darkAccent-hsl']);
 
-            // Force a repaint to ensure all elements update
-            document.body.style.display = 'none';
-            document.body.offsetHeight; // Trigger a reflow
-            document.body.style.display = '';
+            // Remove the forced repaint
+            // document.body.style.display = 'none';
+            // document.body.offsetHeight; // Trigger a reflow
+            // document.body.style.display = '';
 
-            // Add a small delay to ensure all Squarespace elements have updated
-            setTimeout(() => {
+            // Use requestAnimationFrame to ensure all Squarespace elements have updated
+            requestAnimationFrame(() => {
                 const event = new Event('colorschemechange');
                 document.dispatchEvent(event);
-            }, 100);
+            });
         }
 
         function hexToHSL(hex) {
