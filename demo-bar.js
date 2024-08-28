@@ -13,13 +13,42 @@
 
         console.log('Squarespace is not in preview mode.');
 
-        const presetSchemes = [
+        // Function to read color schemes from meta tags
+        function getColorSchemesFromMeta() {
+            const schemes = [];
+            const metaTags = document.getElementsByTagName('meta');
+            
+            for (let i = 0; i < metaTags.length; i++) {
+                const attr = metaTags[i].getAttribute('squarehero-color-scheme');
+                if (attr && attr.startsWith('color-scheme-')) {
+                    const content = metaTags[i].getAttribute('content');
+                    if (content) {
+                        const [schemeName, ...colors] = content.split(',').map(item => item.trim());
+                        schemes.push({ name: schemeName, colors: colors });
+                    }
+                }
+            }
+            
+            return schemes.length > 0 ? schemes : null;
+        }
+
+        // Function to get the target URL from meta tag
+        function getTargetUrlFromMeta() {
+            const metaTag = document.querySelector('meta[squarehero-demo-bar]');
+            return metaTag ? metaTag.getAttribute('target') : '';
+        }
+
+        // Use meta tag color schemes or fall back to default
+        const presetSchemes = getColorSchemesFromMeta() || [
             { name: "Earth tones", colors: ["#ffffff", "#fcf6eb", "#de9831", "#606e31", "#363c2e"] },
             { name: "Pastel with purple", colors: ["#ffffff", "#f7c9b8", "#f45162", "#77d69f", "#4e0660"] },
             { name: "Neutral browns", colors: ["#FFFFFF", "#f5e3ce", "#b69149", "#604c49", "#302a28"] },
             { name: "Cool blues and yellow", colors: ["#ffffff", "#e3ecf9", "#0d7d8c", "#d9b407", "#131c47"] },
             { name: "Warm earth tones", colors: ["#ffffff", "#eed5b9", "#c15b53", "#754834", "#503731"] }
         ];
+
+        // Get the target URL for the "Buy Template" button
+        const targetUrl = getTargetUrlFromMeta();
 
         const controlBarHtml = `
           <div class="control-bar">
@@ -42,7 +71,7 @@
                   <div id="resetBtn" class="custom-btn" title="Reset changes"><span>Reset</span></div>
               </div>
               <div class="cta-wrapper">
-                  <a class="cta-button primary-button" href="">Buy Template</a>
+                  <a class="cta-button primary-button" href="${targetUrl}">Buy Template</a>
               </div>
           </div>
         `;
