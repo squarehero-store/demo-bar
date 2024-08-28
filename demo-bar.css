@@ -161,16 +161,16 @@ body {
 }
 #presetSchemes {
   position: fixed;
-  background-color: rgba(31, 32, 32, 0.95);
+  background-color: #1f2020;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 5px 5px 0 0;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
   z-index: 1002;
-  width: 300px; 
-  max-height: 80vh; 
-  overflow-y: auto; 
+  width: 300px;
+  max-height: calc(8vh);
+  overflow-y: auto;
+  bottom: 92px;
 }
-
 #presetSchemes.hidden {
   display: none;
 }
