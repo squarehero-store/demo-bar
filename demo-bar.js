@@ -15,10 +15,10 @@
 
         const presetSchemes = [
             { name: "Earth tones", colors: ["#ffffff", "#fcf6eb", "#de9831", "#606e31", "#363c2e"] },
-        { name: "Pastel with purple", colors: ["#ffffff", "#f7c9b8", "#f45162", "#77d69f", "#4e0660"] },
-        { name: "Neutral browns", colors: ["#FFFFFF", "#f5e3ce", "#b69149", "#604c49", "#302a28"] },
-        { name: "Cool blues and yellow", colors: ["#ffffff", "#e3ecf9", "#0d7d8c", "#d9b407", "#131c47"] },
-        { name: "Warm earth tones", colors: ["#ffffff", "#eed5b9", "#c15b53", "#754834", "#503731"] }
+            { name: "Pastel with purple", colors: ["#ffffff", "#f7c9b8", "#f45162", "#77d69f", "#4e0660"] },
+            { name: "Neutral browns", colors: ["#FFFFFF", "#f5e3ce", "#b69149", "#604c49", "#302a28"] },
+            { name: "Cool blues and yellow", colors: ["#ffffff", "#e3ecf9", "#0d7d8c", "#d9b407", "#131c47"] },
+            { name: "Warm earth tones", colors: ["#ffffff", "#eed5b9", "#c15b53", "#754834", "#503731"] }
         ];
 
         const controlBarHtml = `
@@ -104,10 +104,7 @@
             // Restore colors from local storage if available
             const savedColors = JSON.parse(localStorage.getItem('savedColors'));
             if (savedColors) {
-                const root = document.documentElement;
-                Object.entries(savedColors).forEach(([key, value]) => {
-                    root.style.setProperty(key, value);
-                });
+                applyColors(savedColors);
             }
 
             // Initialize Coloris for colour swatches
@@ -127,6 +124,8 @@
                     root.style.removeProperty('--accent-hsl');
                     root.style.removeProperty('--darkAccent-hsl');
                     root.style.removeProperty('--black-hsl');
+                    root.style.removeProperty('--safeLightAccent-hsl');
+                    root.style.removeProperty('--safeDarkAccent-hsl');
 
                     // Clear local storage
                     localStorage.removeItem('savedColors');
@@ -137,7 +136,7 @@
             }
         }
 
-        function initializeColoris() {
+       function initializeColoris() {
             Coloris({
                 el: '.colour-swatch',
                 themeMode: 'dark',
@@ -152,24 +151,67 @@
                         const [, h, s, l] = match;
                         const formattedColor = `${h}, ${s}%, ${l}%`;
                         const property = `--${input.id.replace('Picker', '')}-hsl`;
-                        root.style.setProperty(property, formattedColor);
-                        // Save colors to local storage
+                        const colors = {};
+                        colors[property] = formattedColor;
+                        applyColors(colors);
                         saveColorsToLocalStorage();
                         updateSwatchColors();
                     }
                 }
             });
+
+            // Add event listeners to update color picker on open
+            document.querySelectorAll('.colour-swatch').forEach(swatch => {
+                swatch.addEventListener('click', (event) => {
+                    const colorName = event.target.id.replace('Picker', '');
+                    const hslValue = getComputedStyle(document.documentElement).getPropertyValue(`--${colorName}-hsl`).trim();
+                    event.target.value = `hsl(${hslValue})`;
+                    event.target.style.backgroundColor = `hsl(${hslValue})`;
+                });
+            });
+        }
+
+        function updateSwatchColors() {
+            const swatches = document.querySelectorAll('.colour-swatch');
+            swatches.forEach(swatch => {
+                const colorName = swatch.id.replace('Picker', '');
+                const hslValue = getComputedStyle(document.documentElement).getPropertyValue(`--${colorName}-hsl`).trim();
+                swatch.style.backgroundColor = `hsl(${hslValue})`;
+                swatch.value = `hsl(${hslValue})`;
+            });
         }
 
         function applyPresetScheme(index) {
             const scheme = presetSchemes[index];
-            const root = document.documentElement;
+            const colors = {};
             ['white', 'lightAccent', 'accent', 'darkAccent', 'black'].forEach((name, i) => {
                 const hsl = hexToHSL(scheme.colors[i]);
-                root.style.setProperty(`--${name}-hsl`, hsl);
+                colors[`--${name}-hsl`] = hsl;
             });
+            applyColors(colors);
             updateSwatchColors();
             saveColorsToLocalStorage();
+        }
+
+        function applyColors(colors) {
+            const root = document.documentElement;
+            Object.entries(colors).forEach(([key, value]) => {
+                root.style.setProperty(key, value);
+            });
+            // Set safe accent colors
+            root.style.setProperty('--safeLightAccent-hsl', colors['--accent-hsl']);
+            root.style.setProperty('--safeDarkAccent-hsl', colors['--darkAccent-hsl']);
+
+            // Force a repaint to ensure all elements update
+            document.body.style.display = 'none';
+            document.body.offsetHeight; // Trigger a reflow
+            document.body.style.display = '';
+
+            // Add a small delay to ensure all Squarespace elements have updated
+            setTimeout(() => {
+                const event = new Event('colorschemechange');
+                document.dispatchEvent(event);
+            }, 100);
         }
 
         function hexToHSL(hex) {
