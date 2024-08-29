@@ -32,6 +32,11 @@ body {
   font-size: 1.3rem;
   flex: 0 0 20%;
 }
+@media only screen and (max-width: 640px) {
+  .control-bar .logo-wrapper {
+    flex: 1 0 20%;
+  }
+}
 .control-bar .logo-wrapper h5 {
   margin: 0;
 }
@@ -67,6 +72,11 @@ body {
   justify-content: center;
   gap: 15px;
 }
+@media only screen and (max-width: 640px) {
+  .control-bar #colour-wrapper {
+    display: none;
+  }
+}
 .control-bar #colour-wrapper .swatches {
   border-radius: 4px;
   overflow: hidden;
@@ -88,6 +98,11 @@ body {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+@media only screen and (max-width: 640px) {
+  .control-bar .cta-wrapper {
+    flex: 1 0 30%;
+  }
 }
 .control-bar .cta-wrapper .cta-button {
   padding: 13px 26px;
