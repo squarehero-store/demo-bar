@@ -180,6 +180,7 @@
                 themeMode: 'dark',
                 format: 'hsl',
                 wrap: false,
+                alpha: false,
                 onChange: (color, input) => {
                     console.log('Color picked:', color);
                     const root = document.documentElement;
@@ -236,14 +237,14 @@
             Object.entries(colors).forEach(([key, value]) => {
                 root.style.setProperty(key, value);
             });
-            
+
             // Always set safe accent colors, whether loading a preset or editing a swatch
             const accentHsl = root.style.getPropertyValue('--accent-hsl') || colors['--accent-hsl'];
             const darkAccentHsl = root.style.getPropertyValue('--darkAccent-hsl') || colors['--darkAccent-hsl'];
-            
+
             root.style.setProperty('--safeLightAccent-hsl', accentHsl);
             root.style.setProperty('--safeDarkAccent-hsl', darkAccentHsl);
-        
+
             // Use requestAnimationFrame to ensure all Squarespace elements have updated
             requestAnimationFrame(() => {
                 const event = new Event('colorschemechange');
