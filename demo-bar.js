@@ -11,8 +11,6 @@
         return;
       }
 
-      console.log('Squarespace is not in preview mode.');
-
       // Function to read color schemes from meta tags
       function getColorSchemesFromMeta() {
         const schemes = [];
