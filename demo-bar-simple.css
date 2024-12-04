@@ -1,0 +1,106 @@
+.simple-demo-bar {
+  z-index: 1001;
+  position: fixed;
+  bottom: 0;
+  padding: 15px 3vw;
+  background: #1F1F1F !important;
+  width: 100%;
+  color: white;
+  font-size: .8rem;
+  box-sizing: border-box;
+  font-family: "Roboto Condensed", sans-serif;
+  border-top: solid 1px #3c3c3c;
+  display: flex;
+  align-items: center;
+}
+.demo-bar-logo-wrapper {
+  font-size: 1.3rem;
+  flex: 0 0 30%;
+}
+.demo-bar-logo {
+  height: 54px;
+  width: auto;
+}
+.demo-bar-title-wrapper {
+  flex: 1 0 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.demo-bar-title {
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 1rem;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1.12px;
+  font-weight: 700;
+}
+.demo-bar-cta-wrapper {
+  flex: 0 0 30%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.demo-bar-button {
+  padding: 13px 26px;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+  font-family: "Roboto Condensed";
+  font-size: 1rem;
+  color: white;
+  font-weight: 700;
+  letter-spacing: 1.12px;
+  text-transform: uppercase;
+  text-decoration: none !important;
+}
+.demo-bar-button:before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(90deg, #00D1FF 20.4%, #FF00E6 55.91%, #FF003D 80.09%);
+  background-position: 100% 0;
+  transition: background-position 0.5s ease;
+  z-index: -1;
+  border-radius: 0px;
+}
+.demo-bar-button:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #011e45;
+  border-radius: 0px;
+  z-index: -1;
+}
+.demo-bar-button:hover {
+  opacity: 1 !important;
+  animation: buttonPulse 0.5s ease-in-out 0s 1 normal none;
+}
+@keyframes buttonPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@media only screen and (max-width: 640px) {
+  .demo-bar-logo-wrapper {
+    flex: 1 0 20%;
+  }
+  .demo-bar-cta-wrapper {
+    flex: 1 0 30%;
+  }
+  .demo-bar-title-wrapper {
+    display: none;
+  }
+}
